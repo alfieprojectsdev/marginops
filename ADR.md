@@ -1,9 +1,3 @@
-I am building a Next.js (App Router) + Tailwind CSS dashboard prototype called 'MarginOps'. It is a sales enablement tool designed to show a 'Calm Web' executive summary of marketing profitability. Please generate a sleek, minimalist, single-page layout. I need three main metric cards at the top: Blended CAC, LTV, and Blended ROAS. Below that, create a mock PostgreSQL schema (using Prisma) that simulates data coming from Meta Ads, Google Ads, TikTok Ads, and Shopify, and write the logic that merges them to calculate those top three metrics.
-
----
-
-## more details:
-
 ### I. Architecture Decision Records (ADRs)
 
 **ADR 1: Frontend Framework & UI Styling**
@@ -57,11 +51,4 @@ I am building a Next.js (App Router) + Tailwind CSS dashboard prototype called '
 * **Calm Web Philosophy:** No flashing red numbers or overwhelming dials.
 * **Executive View:** High-clarity, top-level summaries that a marketing executive or business owner can understand in 5 seconds.
 * **Interactive Filters:** Basic date-range and platform toggles to demonstrate the dashboard's responsiveness during a pitch.
-
----
-
-I am building a Next.js (App Router) + Tailwind CSS dashboard prototype called 'MarginOps'. It is a sales enablement tool designed to show a 'Calm Web' executive summary of marketing profitability. Please generate a sleek, minimalist, single-page layout. I need three main metric cards at the top: Blended CAC, LTV, and Blended ROAS. Below that, create a mock PostgreSQL schema (using Prisma) that simulates data coming from Meta Ads, Google Ads, TikTok Ads, and Shopify, and write the logic that merges them to calculate those top three metrics.
-
-git@github.com:alfieprojectsdev/marginops.git
-
 

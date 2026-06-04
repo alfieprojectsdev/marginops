@@ -3,18 +3,23 @@
 @tailwind utilities;
 
 :root {
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 body {
   background-color: theme(colors.canvas);
-  color: #ededef;
+  color: theme(colors.ink);
   -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
-/* subtle grain-free calm gradient behind the canvas */
-.calm-bg {
-  background:
-    radial-gradient(1200px 600px at 15% -10%, rgba(124, 156, 255, 0.06), transparent 60%),
-    radial-gradient(900px 500px at 100% 0%, rgba(90, 209, 154, 0.05), transparent 55%);
+/* Even line breaks on headings; fewer orphans in prose. */
+h1, h2, h3 {
+  text-wrap: balance;
+}
+
+/* Lining, tabular figures for all metric/data readouts. */
+.nums {
+  font-variant-numeric: tabular-nums lining-nums;
+  font-feature-settings: "tnum" 1, "lnum" 1;
 }

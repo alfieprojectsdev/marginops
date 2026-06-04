@@ -25,13 +25,15 @@ export interface ShopifyOrderRow {
 }
 
 // --- Ad spend: ~30 days, 3 platforms -------------------------------------
-// Daily spend roughly: Meta $620, Google $480, TikTok $300 => ~$1,400/day.
+// Philippine-market magnitudes (PHP). Daily spend roughly:
+// Meta ₱2,400, Google ₱1,650, TikTok ₱800 => ~₱4,850/day, ~₱145k over 30 days.
+// CPM in pesos; ctr/cvr unchanged. impressions/clicks aren't shown on the dash.
 function buildAdSpend(): AdSpendDailyRow[] {
   const rows: AdSpendDailyRow[] = [];
   const base: Record<AdPlatform, { spend: number; cpm: number; ctr: number; cvr: number }> = {
-    META:   { spend: 95, cpm: 11, ctr: 0.018, cvr: 0.031 },
-    GOOGLE: { spend: 65, cpm: 14, ctr: 0.041, cvr: 0.045 },
-    TIKTOK: { spend: 32, cpm: 7,  ctr: 0.012, cvr: 0.022 },
+    META:   { spend: 2400, cpm: 280, ctr: 0.018, cvr: 0.031 },
+    GOOGLE: { spend: 1650, cpm: 350, ctr: 0.041, cvr: 0.045 },
+    TIKTOK: { spend: 800,  cpm: 180, ctr: 0.012, cvr: 0.022 },
   };
   for (let d = 0; d < 30; d++) {
     const date = new Date(2026, 4, 1 + d).toISOString().slice(0, 10); // May 2026
@@ -58,7 +60,7 @@ function buildAdSpend(): AdSpendDailyRow[] {
 }
 
 // --- Shopify orders -------------------------------------------------------
-// ~9 orders/day, ~55% first orders => new customers. AOV ~ $95, COGS ~40%.
+// ~9 orders/day, ~55% first orders => new customers. AOV ~ ₱2,550, COGS ~40%.
 function buildShopifyOrders(): ShopifyOrderRow[] {
   const rows: ShopifyOrderRow[] = [];
   let orderSeq = 0;
@@ -68,7 +70,7 @@ function buildShopifyOrders(): ShopifyOrderRow[] {
     const ordersToday = 8 + (d % 4); // 8..11
     for (let i = 0; i < ordersToday; i++) {
       const isFirstOrder = (orderSeq % 9) < 5; // ~55% new
-      const aov = 80 + ((orderSeq * 13) % 45); // $80..$124
+      const aov = 2000 + ((orderSeq * 13) % 1100); // ₱2,000..₱3,099
       // first orders map to a fresh customer; repeats reuse an earlier id
       const customerId = isFirstOrder
         ? `cust-${custSeq++}`
