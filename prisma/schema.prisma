@@ -1,0 +1,70 @@
+// MarginOps — mock data warehouse schema
+// Simulates raw rows synced from 4 sources: Meta Ads, Google Ads, TikTok Ads, Shopify.
+// Each ad platform lands daily campaign-level spend rows. Shopify lands orders + customers.
+// The merge logic in lib/metrics.ts rolls these up into Blended CAC, LTV, Blended ROAS.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ---------------------------------------------------------------------------
+// Ad platforms
+// ---------------------------------------------------------------------------
+
+enum AdPlatform {
+  META
+  GOOGLE
+  TIKTOK
+}
+
+// One row per platform, per campaign, per day. The unified ad-spend fact table.
+// In a real ETL each platform connector writes here after schema-mapping its API payload.
+model AdSpendDaily {
+  id          String     @id @default(cuid())
+  platform    AdPlatform
+  campaignId  String
+  campaignName String
+  date        DateTime   @db.Date
+  spend       Decimal    @db.Decimal(12, 2) // ad cost in account currency
+  impressions Int        @default(0)
+  clicks      Int        @default(0)
+  conversions Int        @default(0) // platform-attributed conversions
+  createdAt   DateTime   @default(now())
+
+  @@unique([platform, campaignId, date])
+  @@index([date])
+  @@index([platform])
+}
+
+// ---------------------------------------------------------------------------
+// Shopify
+// ---------------------------------------------------------------------------
+
+model ShopifyCustomer {
+  id         String         @id // Shopify customer GID
+  email      String         @unique
+  firstSeen  DateTime       @db.Date
+  orders     ShopifyOrder[]
+  createdAt  DateTime       @default(now())
+
+  @@index([firstSeen])
+}
+
+model ShopifyOrder {
+  id           String          @id // Shopify order GID
+  customerId   String
+  customer     ShopifyCustomer @relation(fields: [customerId], references: [id])
+  processedAt  DateTime        @db.Date
+  totalPrice   Decimal         @db.Decimal(12, 2) // gross order value
+  totalCost    Decimal         @db.Decimal(12, 2) // COGS for margin
+  isFirstOrder Boolean         @default(false) // true => this order acquired the customer
+  createdAt    DateTime        @default(now())
+
+  @@index([processedAt])
+  @@index([customerId])
+}
