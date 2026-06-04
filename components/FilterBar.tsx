@@ -96,6 +96,28 @@ export default function FilterBar({ filters }: { filters: Filters }) {
             </button>
           );
         })}
+
+        {/* Shopify — the storefront source, always on. A status pill, not a
+            toggle: distinct solid styling + check to signal tracking is live. */}
+        <span
+          className="ml-1 inline-flex items-center gap-1.5 rounded-full bg-positive/10 px-3 py-1.5 text-sm font-medium text-positive ring-1 ring-inset ring-positive/25"
+          title="Shopify storefront tracking is active"
+        >
+          <svg
+            aria-hidden
+            viewBox="0 0 16 16"
+            className="h-3.5 w-3.5"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.25"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M3.5 8.5l3 3 6-7" />
+          </svg>
+          Shopify
+          <span className="sr-only">connected</span>
+        </span>
       </div>
     </div>
   );

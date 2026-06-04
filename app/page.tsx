@@ -33,24 +33,19 @@ export default async function Home({
 
   return (
     <main className="mx-auto max-w-5xl px-6 py-14">
-      {/* Header */}
-      <header className="flex flex-wrap items-end justify-between gap-6 border-b border-edge pb-8">
-        <div>
-          <div className="flex items-center gap-2 text-sm font-semibold text-accent">
-            <span className="inline-block h-2 w-2 rounded-full bg-accent" />
-            MarginOps
-          </div>
-          <h1 className="mt-3 text-3xl font-semibold tracking-tight text-ink">
-            Marketing profitability
-          </h1>
-          <p className="mt-2 text-sm text-muted">
-            Blended across {channelList} &amp; Shopify · Trailing {filters.range} days
-          </p>
+      {/* Header — single left-aligned block; period revenue moved down to the
+          ROAS card so it sits with the metrics it explains. */}
+      <header className="border-b border-edge pb-8">
+        <div className="flex items-center gap-2 text-sm font-semibold text-accent">
+          <span className="inline-block h-2 w-2 rounded-full bg-accent" />
+          MarginOps
         </div>
-        <div className="text-right">
-          <div className="text-sm text-muted">Revenue this period</div>
-          <div className="nums mt-1 text-2xl font-semibold text-ink">{peso(m.totalRevenue)}</div>
-        </div>
+        <h1 className="mt-3 text-3xl font-semibold tracking-tight text-ink">
+          Marketing profitability
+        </h1>
+        <p className="mt-2 text-sm text-muted">
+          Blended across {channelList} &amp; Shopify · Trailing {filters.range} days
+        </p>
       </header>
 
       {/* Filters */}
@@ -75,8 +70,9 @@ export default async function Home({
         </section>
       ) : (
         <>
-          {/* Lead verdict: ROAS is the one emphasized metric, with plain-language context. */}
-          <section className="mt-10 grid items-center gap-6 rounded-2xl border border-edge bg-surface px-7 py-8 sm:grid-cols-[auto_1fr]">
+          {/* Lead verdict: ROAS is the one emphasized metric. Supporting figures
+              read as spaced micro-metrics, not a narrative block. */}
+          <section className="mt-10 flex flex-col gap-8 rounded-2xl border border-edge bg-surface px-7 py-8 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <div className="flex items-center gap-3">
                 <span className="text-xs font-semibold uppercase tracking-wider text-muted">
@@ -89,16 +85,34 @@ export default async function Home({
               <div className="nums mt-3 text-6xl font-semibold tracking-tight text-ink">
                 {m.blendedRoas.toFixed(2)}×
               </div>
+              <p className="mt-2 text-sm text-muted">
+                Revenue returned per {peso(1)} of blended ad spend.
+              </p>
             </div>
-            <p className="text-base leading-relaxed text-muted sm:border-l sm:border-edge sm:pl-6">
-              Every <span className="font-medium text-ink">{peso(1)}</span> of blended ad
-              spend returns <span className="font-medium text-ink">{peso(m.blendedRoas)}</span> in
-              revenue. You acquire a customer for{" "}
-              <span className="font-medium text-ink">{peso(m.blendedCac)}</span> and earn{" "}
-              <span className="font-medium text-ink">{peso(m.ltv)}</span> in gross margin over their
-              lifetime, an LTV:CAC of{" "}
-              <span className="font-medium text-ink">{m.ltvToCacRatio.toFixed(1)}×</span>.
-            </p>
+            <dl className="grid grid-cols-1 gap-x-10 gap-y-4 sm:grid-cols-3 sm:border-l sm:border-edge sm:pl-8">
+              <div>
+                <dt className="text-xs font-semibold uppercase tracking-wider text-muted">
+                  Revenue this period
+                </dt>
+                <dd className="nums mt-1 text-lg font-semibold text-ink">{peso(m.totalRevenue)}</dd>
+              </div>
+              <div>
+                <dt className="text-xs font-semibold uppercase tracking-wider text-muted">
+                  LTV:CAC
+                </dt>
+                <dd className="nums mt-1 text-lg font-semibold text-ink">
+                  {m.ltvToCacRatio.toFixed(1)}×
+                </dd>
+              </div>
+              <div>
+                <dt className="text-xs font-semibold uppercase tracking-wider text-muted">
+                  Gross margin
+                </dt>
+                <dd className="nums mt-1 text-lg font-semibold text-ink">
+                  {Math.round(m.grossMargin * 100)}%
+                </dd>
+              </div>
+            </dl>
           </section>
 
           {/* Supporting metrics: one panel, cells divided — not separate cards. */}
@@ -117,7 +131,7 @@ export default async function Home({
             <Stat
               label="New customers"
               value={m.newCustomers.toLocaleString("en-PH")}
-              caption={`${m.totalCustomers} total ordering customers this period.`}
+              caption={`${m.newCustomers.toLocaleString("en-PH")} of ${m.totalCustomers.toLocaleString("en-PH")} ordering customers were new this period.`}
             />
           </section>
 

@@ -35,13 +35,26 @@ function buildAdSpend(): AdSpendDailyRow[] {
     GOOGLE: { spend: 1650, cpm: 350, ctr: 0.041, cvr: 0.045 },
     TIKTOK: { spend: 800,  cpm: 180, ctr: 0.012, cvr: 0.022 },
   };
+  // Budget mix shifts over the month so different date ranges show different
+  // allocations (ranges count back from the last day): Meta ramps up as it
+  // scales, TikTok winds down after an early test push, Google holds steady.
+  // A recent 7-day window is Meta-heavy; the full 30-day window is balanced.
+  const trend = (platform: AdPlatform, t: number): number => {
+    switch (platform) {
+      case "META":   return 0.55 + 0.9 * t;            // 0.55 -> 1.45
+      case "TIKTOK": return 1.5 - 1.0 * t;             // 1.50 -> 0.50
+      case "GOOGLE": return 1.0 + 0.08 * Math.sin(t * Math.PI); // ~steady
+    }
+  };
+
   for (let d = 0; d < 30; d++) {
     const date = new Date(2026, 4, 1 + d).toISOString().slice(0, 10); // May 2026
+    const t = d / 29; // 0..1 across the window
     (Object.keys(base) as AdPlatform[]).forEach((platform) => {
       const cfg = base[platform];
-      // mild day-to-day wobble
+      // mild day-to-day wobble on top of the platform's monthly trend
       const wobble = 0.85 + ((d * 7 + platform.length) % 10) / 33;
-      const spend = Math.round(cfg.spend * wobble);
+      const spend = Math.round(cfg.spend * trend(platform, t) * wobble);
       const impressions = Math.round((spend / cfg.cpm) * 1000);
       const clicks = Math.round(impressions * cfg.ctr);
       const conversions = Math.round(clicks * cfg.cvr);
