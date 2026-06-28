@@ -70,10 +70,10 @@ export default async function Home({
         </section>
       ) : (
         <>
-          {/* Lead verdict: ROAS is the one emphasized metric. Supporting figures
-              read as spaced micro-metrics, not a narrative block. */}
-          <section className="mt-10 flex flex-col gap-8 rounded-2xl border border-edge bg-surface px-7 py-8 sm:flex-row sm:items-center sm:justify-between">
-            <div>
+          {/* The contradiction, in one frame: platform ROAS looks healthy while
+              the blended LTV:CAC is underwater. Two co-equal headline metrics. */}
+          <section className="mt-10 grid gap-8 rounded-2xl border border-edge bg-surface px-7 py-8 sm:grid-cols-2 sm:gap-0 sm:divide-x sm:divide-edge">
+            <div className="sm:pr-8">
               <div className="flex items-center gap-3">
                 <span className="text-xs font-semibold uppercase tracking-wider text-muted">
                   Blended ROAS
@@ -86,33 +86,31 @@ export default async function Home({
                 {m.blendedRoas.toFixed(2)}×
               </div>
               <p className="mt-2 text-sm text-muted">
-                Revenue returned per {peso(1)} of blended ad spend.
+                {peso(m.totalRevenue)} returned on {peso(m.totalAdSpend)} of blended ad spend.
               </p>
             </div>
-            <dl className="grid grid-cols-1 gap-x-10 gap-y-4 sm:grid-cols-3 sm:border-l sm:border-edge sm:pl-8">
-              <div>
-                <dt className="text-xs font-semibold uppercase tracking-wider text-muted">
-                  Revenue this period
-                </dt>
-                <dd className="nums mt-1 text-lg font-semibold text-ink">{peso(m.totalRevenue)}</dd>
+            <div className="sm:pl-8">
+              <div className="flex items-center gap-3">
+                <span className="text-xs font-semibold uppercase tracking-wider text-muted">
+                  LTV : CAC
+                </span>
+                <HealthPill tone={ratioTone}>
+                  {m.ltvToCacRatio >= 1 ? "Healthy" : "At risk"}
+                </HealthPill>
               </div>
-              <div>
-                <dt className="text-xs font-semibold uppercase tracking-wider text-muted">
-                  LTV:CAC
-                </dt>
-                <dd className="nums mt-1 text-lg font-semibold text-ink">
-                  {m.ltvToCacRatio.toFixed(1)}×
-                </dd>
+              <div
+                className={`nums mt-3 text-6xl font-semibold tracking-tight ${
+                  m.ltvToCacRatio >= 1 ? "text-positive" : "text-negative"
+                }`}
+              >
+                {m.ltvToCacRatio.toFixed(2)}×
               </div>
-              <div>
-                <dt className="text-xs font-semibold uppercase tracking-wider text-muted">
-                  Gross margin
-                </dt>
-                <dd className="nums mt-1 text-lg font-semibold text-ink">
-                  {Math.round(m.grossMargin * 100)}%
-                </dd>
-              </div>
-            </dl>
+              <p className={`mt-2 text-sm ${m.ltvToCacRatio >= 1 ? "text-muted" : "text-negative"}`}>
+                {m.ltvToCacRatio >= 1
+                  ? "Healthy: each customer earns back more than they cost to acquire."
+                  : "Below 1.0: losing money on every customer acquired."}
+              </p>
+            </div>
           </section>
 
           {/* Supporting metrics: one panel, cells divided — not separate cards. */}
@@ -125,8 +123,7 @@ export default async function Home({
             <Stat
               label="LTV"
               value={peso(m.ltv)}
-              caption={`${Math.round(m.grossMargin * 100)}% gross margin per customer.`}
-              pill={{ tone: ratioTone, label: `LTV:CAC ${m.ltvToCacRatio.toFixed(1)}×` }}
+              caption="Gross-margin value per customer over their orders."
             />
             <Stat
               label="New customers"
