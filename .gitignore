@@ -7,4 +7,9 @@ next-env.d.ts
 
 .claude
 
-chat-artifacts
+# Local planning artifacts (deck, screenshots, zip) stay out of git, but the
+# Python demo is tracked so it can deploy to Streamlit Cloud.
+chat-artifacts/*
+!chat-artifacts/analytics_demo/
+chat-artifacts/analytics_demo/__pycache__/
+chat-artifacts/analytics_demo/.venv/

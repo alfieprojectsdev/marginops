@@ -1,0 +1,8 @@
+# pip fallback (uv is the recommended path — see run_mac.command / run_win.bat).
+#   python -m venv .venv && source .venv/bin/activate   (mac/Linux)
+#   .venv\Scripts\activate                                (Windows)
+#   pip install -r requirements.txt
+numpy>=1.26
+pandas>=2.0
+matplotlib>=3.8
+streamlit>=1.30
